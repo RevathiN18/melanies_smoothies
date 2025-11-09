@@ -20,6 +20,18 @@ ingredients_list=st.multiselect(
     ,my_dataframe
     ,max_selections = 5
 )
+
+cnx=st.connection("snowflake")
+session = cnx.session()
+my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
+#st.dataframe(data=my_dataframe, use_container_width=True)
+#st.stop()
+
+#Convert the Snowpark Dataframe to a Pandas Dataframe so we can use the LOC function
+pd_df=my_dataframe.to_pandas()
+st.dataframe(pd_df)
+st.stop()
+
 if ingredients_list:
     #st.write(ingredients_list)
     #st.text (ingredients_list)
@@ -45,16 +57,6 @@ if ingredients_list:
 
     #st.write(my_insert_stmt)
     #st.stop()
-cnx=st.connection("snowflake")
-session = cnx.session()
-my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
-#st.dataframe(data=my_dataframe, use_container_width=True)
-#st.stop()
-
-#Convert the Snowpark Dataframe to a Pandas Dataframe so we can use the LOC function
-pd_df=my_dataframe.to_pandas()
-st.dataframe(pd_df)
-st.stop()
 
 time_to_insert=st.button('Submit Order')
 if time_to_insert:
